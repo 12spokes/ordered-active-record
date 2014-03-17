@@ -21,7 +21,7 @@ module OrderedActiveRecord
             else
               from = [position_new, position_old + 1].min
               to = [position_new, position_old - 1].max
-              scope_for(column, options).where(column => from.eql?(to) ? from : from..to).update_all("#{column} = #{column} #{(position_new < position_old) ? '+' : '-'} 1")
+              scope_for(column, options).where(column => from.eql?(to) ? from : from..to).order(column => (position_new < position_old ? :desc : :asc)).update_all("#{column} = #{column} #{(position_new < position_old) ? '+' : '-'} 1")
             end
           end
         end
@@ -31,7 +31,7 @@ module OrderedActiveRecord
 
       def reorder_positions(column, position, action, options)
         if position.present?
-          scope_for(column, options).where(["#{column} >= ?", position]).update_all("#{column} = #{column} #{:insert.eql?(action) ? '+' : '-'} 1")
+          scope_for(column, options).where(["#{column} >= ?", position]).order(column => (:insert.eql?(action) ? :desc : :asc)).update_all("#{column} = #{column} #{:insert.eql?(action) ? '+' : '-'} 1")
         end
       end
 
