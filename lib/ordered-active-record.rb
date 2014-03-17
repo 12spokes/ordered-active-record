@@ -21,7 +21,7 @@ module OrderedActiveRecord
             else
               from = [position_new, position_old + 1].min
               to = [position_new, position_old - 1].max
-              scope_for(column, options).where(column => from.eql?(to) ? from : from..to).update_all("#{column} = #{column} #{(position_new < position_old) ? '+' : '-'} 1")
+              scope_for(column, options).where(column => from.eql?(to) ? from : from..to).update_all("#{column} = #{column} #{(position_new < position_old) ? '+' : '-'} 1").order(column => (position_new < position_old) ? :asc : :desc)
             end
           end
         end
